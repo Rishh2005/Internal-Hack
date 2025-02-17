@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #1a1a1a;
+      cursor: none;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    #game-container {
+      width: 600px;
+      height: 400px;
+      border: 3px solid #333;
+      position: relative;
+      background: #222;
+    }
+
+    #ball {
+      width: 40px;
+      height: 40px;
+      background: #ff4d4d;
+      border-radius: 50%;
+      position: absolute;
+      transition: background-color 0.3s;
+    }
+
+    #cursor {
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    #score {
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #timer {
+      color: #fff;
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    #restart-btn {
+      margin-top: 20px;
+      padding: 0.5rem 1rem;
+      font-size: 18px;
+      background: var(--primary, #3b82f6);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .caught {
+      animation: catch-animation 0.5s;
+    }
+
+    @keyframes catch-animation {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="game-container">
+    <div id="ball"></div>
+    <div id="cursor"></div>
+  </div>
+  <div id="timer">Time: 30s</div>
+  <button id="restart-btn">Restart Game</button>
+
+  <script>
+    const ball = document.getElementById('ball');
+    const cursor = document.getElementById('cursor');
+    const container = document.getElementById('game-container');
+    const scoreElement = document.getElementById('score');
+    const timerElement = document.getElementById('timer');
+    const restartBtn = document.getElementById('restart-btn');
+
+    // Audio objects
+    const catchSound = new Audio('catch.mp3');      // Replace with your actual catch sound file
+    const bubblePopSound = new Audio('bubblepop.mp3');  // Replace with your actual bubble pop sound file
+
+    let score = 0;
+    let timeLeft = 30;
+    let gameActive = true;
+
+    // Initialize ball position and speed
+    let ballX = 300;
+    let ballY = 200;
+    let ballSpeedX = 5;
+    let ballSpeedY = 5;
+    const speedIncrement = 0.5; // Increase speed after each catch
+
+    // Update cursor position
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      cursor.style.left = (e.clientX - rect.left - 10) + 'px';
+      cursor.style.top = (e.clientY - rect.top - 10) + 'px';
+    });
+
+    function updateBallPosition(cursorX, cursorY) {
+      const rect = ball.getBoundingClientRect();
+      const ballCenterX = rect.left + 20;
+      const ballCenterY = rect.top + 20;
+
+      // Calculate direction from ball to cursor
+      const dx = cursorX - ballCenterX;
+      const dy = cursorY - ballCenterY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // If cursor is close, move away from it
+      if (distance < 150) {
+        const angle = Math.atan2(dy, dx);
+        ballSpeedX = -Math.cos(angle) * 8;
+        ballSpeedY = -Math.sin(angle) * 8;
+      }
+
+      // Update ball position
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // Bounce off walls and play bubble pop sound effect
+      if (ballX <= 0 || ballX >= 560) {
+        ballSpeedX *= -1;
+        bubblePopSound.currentTime = 0;
+        bubblePopSound.play();
+      }
+      if (ballY <= 0 || ballY >= 360) {
+        ballSpeedY *= -1;
+        bubblePopSound.currentTime = 0;
+        bubblePopSound.play();
+      }
+
+      // Keep ball in bounds
+      ballX = Math.max(0, Math.min(560, ballX));
+      ballY = Math.max(0, Math.min(360, ballY));
+
+      ball.style.left = ballX + 'px';
+      ball.style.top = ballY + 'px';
+    }
+
+    function checkCollision(cursorX, cursorY) {
+      const ballRect = ball.getBoundingClientRect();
+      const cursorRect = cursor.getBoundingClientRect();
+      
+      const distance = Math.sqrt(
+        Math.pow((ballRect.left + 20) - (cursorRect.left + 10), 2) +
+        Math.pow((ballRect.top + 20) - (cursorRect.top + 10), 2)
+      );
+
+      if (distance < 30) {
+        // Increase score and update UI
+        score += 1;
+        scoreElement.textContent = `Score: ${score}`;
+
+        // Play catch sound effect and animation
+        catchSound.currentTime = 0;
+        catchSound.play();
+        ball.classList.add('caught');
+        setTimeout(() => ball.classList.remove('caught'), 500);
+
+        // Increase ball speed for enhanced difficulty
+        ballSpeedX *= (1 + speedIncrement / 10);
+        ballSpeedY *= (1 + speedIncrement / 10);
+
+        // Reset ball to center with random velocity
+        ballX = 300;
+        ballY = 200;
+        const angle = Math.random() * Math.PI * 2;
+        ballSpeedX = Math.cos(angle) * 5;
+        ballSpeedY = Math.sin(angle) * 5;
+      }
+    }
+
+    function gameLoop() {
+      if (!gameActive) return;
+
+      const cursorRect = cursor.getBoundingClientRect();
+      updateBallPosition(cursorRect.left + 10, cursorRect.top + 10);
+      checkCollision(cursorRect.left + 10, cursorRect.top + 10);
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Timer
+    const timerInterval = setInterval(() => {
+      timeLeft--;
+      timerElement.textContent = `Time: ${timeLeft}s`;
+      
+      if (timeLeft <= 0) {
+        gameActive = false;
+        clearInterval(timerInterval);
+        alert(`Game Over! Your score: ${score}`);
+        restartBtn.style.display = 'block';
+      }
+    }, 1000);
+
+    // Restart game on button click
+    restartBtn.addEventListener('click', () => {
+      // Reset variables
+      score = 0;
+      timeLeft = 30;
+      gameActive = true;
+      scoreElement.textContent = `Score: ${score}`;
+      timerElement.textContent = `Time: ${timeLeft}s`;
+      ballX = 300;
+      ballY = 200;
+      const angle = Math.random() * Math.PI * 2;
+      ballSpeedX = Math.cos(angle) * 5;
+      ballSpeedY = Math.sin(angle) * 5;
+      restartBtn.style.display = 'none';
+      gameLoop();
+
+      // Restart timer
+      setInterval(() => {
+        if (!gameActive) return;
+        timeLeft--;
+        timerElement.textContent = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          gameActive = false;
+          alert(`Game Over! Your score: ${score}`);
+          restartBtn.style.display = 'block';
+        }
+      }, 1000);
+    });
+
+    gameLoop();
+  </script>
+</body>
+</html>

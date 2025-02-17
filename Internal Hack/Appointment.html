@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthConnect - Schedule an Appointment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-blue-50">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="Overview.html">
+                    <i class="fas fa-heart text-blue-600 text-2xl mr-2"></i>
+                    <span class="text-xl font-bold text-blue-600">HealthConnect</span>
+                </a>
+            </div>
+            <nav class="flex space-x-6">
+                <a href="Overview.html" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                <a href="Locations.html" class="text-gray-600 hover:text-blue-600">Games</a>
+                <a href="Records.html" class="text-gray-600 hover:text-blue-600">Records</a>
+                <a href="Appointment.html" class="text-gray-600 hover:text-blue-600">Appointments</a>
+                <a href="Profile.html" class="text-gray-600 hover:text-blue-600">Profile</a>
+                <a href="About Us.html" class="text-gray-600 hover:text-blue-600">About</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-blue-600 mb-6">Schedule an Appointment</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-lg font-semibold mb-4">Select a Date</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <button class="text-gray-600" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <span class="text-gray-600" id="current-month">February 2025</span>
+                    <button class="text-gray-600" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="grid grid-cols-7 gap-2 text-center text-gray-600" id="calendar">
+                    <!-- Calendar will be populated here -->
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-lg font-semibold mb-4">Available Time Slots</h2>
+                <div class="grid grid-cols-2 gap-4" id="time-slots">
+                    <!-- Time slots will be populated here -->
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-lg font-semibold mb-4">Select a Hospital</h2>
+            <select class="w-full p-2 border border-gray-300 rounded-lg" id="hospital-select" onchange="updateDoctors()">
+                <option value="City General Hospital">City General Hospital</option>
+                <option value="County Hospital">County Hospital</option>
+                <option value="St. Mary's Hospital">St. Mary's Hospital</option>
+            </select>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-lg font-semibold mb-4">Select a Doctor</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="doctor-list">
+                <!-- Doctors will be populated here based on the selected hospital -->
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 class="text-lg font-semibold mb-4">Appointment Summary</h2>
+            <p class="text-gray-600"><strong>Date:</strong> <span id="summary-date">Sat Feb 15 2025</span></p>
+            <p class="text-gray-600"><strong>Time:</strong> <span id="summary-time">2:00 PM</span></p>
+            <p class="text-gray-600"><strong>Hospital:</strong> <span id="summary-hospital">City General Hospital</span></p>
+            <p class="text-gray-600"><strong>Doctor:</strong> <span id="summary-doctor">Dr. Smith</span></p>
+            <button class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg" onclick="confirmAppointment()">Confirm Appointment</button>
+        </div>
+    </main>
+    <footer class="bg-white py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <p class="text-gray-600">&copy; 2023 HealthConnect. All rights reserved.</p>
+            <div class="flex items-center space-x-4">
+                <a href="About Us.html" class="text-gray-600">Privacy Policy</a>
+                <a href="About Us.html" class="text-gray-600">Terms and Conditions</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const doctors = {
+            "City General Hospital": [
+                { name: "Dr. Smith", specialty: "General Practitioner" },
+                { name: "Dr. Johnson", specialty: "Cardiologist" }
+            ],
+            "County Hospital": [
+                { name: "Dr. Lee", specialty: "Dermatologist" },
+                { name: "Dr. Patel", specialty: "Neurologist" }
+            ],
+            "St. Mary's Hospital": [
+                { name: "Dr. Brown", specialty: "Pediatrician" },
+                { name: "Dr. Davis", specialty: "Orthopedic Surgeon" }
+            ]
+        };
+
+        const timeSlots = [
+            "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"
+        ];
+
+        let currentMonth = 1; // February
+        let currentYear = 2025;
+
+        function updateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const currentMonthLabel = document.getElementById('current-month');
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            currentMonthLabel.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+
+            calendar.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                calendar.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'cursor-pointer';
+                dayCell.innerText = day;
+                dayCell.onclick = () => selectDate(new Date(currentYear, currentMonth, day).toDateString());
+                calendar.appendChild(dayCell);
+            }
+        }
+
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar();
+        }
+
+        function updateDoctors() {
+            const hospital = document.getElementById('hospital-select').value;
+            const doctorList = document.getElementById('doctor-list');
+            doctorList.innerHTML = '';
+
+            doctors[hospital].forEach(doctor => {
+                const doctorDiv = document.createElement('div');
+                doctorDiv.className = 'flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer';
+                doctorDiv.innerHTML = `
+                    <i class="fas fa-user-md text-gray-600 text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-600">${doctor.name}</h3>
+                        <p class="text-gray-600">${doctor.specialty}</p>
+                    </div>
+                `;
+                doctorDiv.onclick = () => selectDoctor(doctor.name);
+                doctorList.appendChild(doctorDiv);
+            });
+        }
+
+        function updateTimes() {
+            const timeSlotsContainer = document.getElementById('time-slots');
+            timeSlotsContainer.innerHTML = '';
+
+            timeSlots.forEach(time => {
+                const timeSlotButton = document.createElement('button');
+                timeSlotButton.className = 'bg-gray-200 text-gray-600 py-2 rounded-lg';
+                timeSlotButton.innerText = time;
+                timeSlotButton.onclick = () => selectTime(time);
+                timeSlotsContainer.appendChild(timeSlotButton);
+            });
+        }
+
+        function selectDate(date) {
+            document.getElementById('summary-date').innerText = date;
+        }
+
+        function selectTime(time) {
+            const timeButtons = document.querySelectorAll('#time-slots button');
+            timeButtons.forEach(button => button.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('summary-time').innerText = time;
+        }
+
+        function selectDoctor(doctor) {
+            const doctorButtons = document.querySelectorAll('#doctor-list div');
+            doctorButtons.forEach(button => button.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('summary-doctor').innerText = doctor;
+        }
+
+        function confirmAppointment() {
+            const date = document.getElementById('summary-date').innerText;
+            const time = document.getElementById('summary-time').innerText;
+            const hospital = document.getElementById('summary-hospital').innerText;
+            const doctor = document.getElementById('summary-doctor').innerText;
+
+            alert(`Appointment Confirmed!\n\nDate: ${date}\nTime: ${time}\nHospital: ${hospital}\nDoctor: ${doctor}`);
+        }
+
+        // Initialize the calendar, time slots, and doctor list based on the default selected hospital
+        updateCalendar();
+        updateTimes();
+        updateDoctors();
+    </script>
+</body>
+</html>

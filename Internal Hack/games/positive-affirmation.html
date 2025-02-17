@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positive Affirmations Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            background-color: #eef2f3;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .affirmation {
+            font-size: 1.5em;
+            margin: 20px;
+            padding: 20px;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+        .back-button:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <a href="../Profile.html" class="back-button">← Back</a>
+    <div class ="game-container">
+        <div id="gameContent">
+    </div>
+
+    <script>
+        // Game state object to track the current affirmation
+        const gameState = {};
+
+        function initializePositiveAffirmations() {
+            const affirmations = [
+                "I am capable and strong.",
+                "I am worthy of love and happiness.",
+                "I am grateful for all the good in my life.",
+                "I am confident and self-assured.",
+                "I am peaceful and calm."
+            ];
+
+            gameState.currentAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="positive-affirmation-container">
+                    <p class="affirmation">${gameState.currentAffirmation}</p>
+                    <button class="btn" onclick="showNextAffirmation()">Next Affirmation</button>
+                </div>
+            `;
+        }
+
+        function showNextAffirmation() {
+            const affirmations = [
+                "I am capable and strong.",
+                "I am worthy of love and happiness.",
+                "I am grateful for all the good in my life.",
+                "I am confident and self-assured.",
+                "I am peaceful and calm."
+            ];
+
+            gameState.currentAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+            document.querySelector('.affirmation').textContent = gameState.currentAffirmation;
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initializePositiveAffirmations;
+    </script>
+
+</body>
+</html>

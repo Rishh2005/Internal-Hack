@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #000;
+      overflow: hidden;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .spark {
+      position: absolute;
+      pointer-events: none;
+      animation: sparkle 1s ease-out forwards;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 2rem;
+      pointer-events: none;
+      user-select: none;
+      animation: float 2s ease-out forwards;
+    }
+
+    .message {
+      position: absolute;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 1.5rem;
+      pointer-events: none;
+      user-select: none;
+      animation: fadeUp 2s ease-out forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes sparkle {
+      0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(180deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeUp {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const messages = [
+      "Breathe in... Breathe out...",
+      "You're doing great!",
+      "Take a moment to smile",
+      "Life is beautiful",
+      "You got this!",
+      "Keep sparking joy!",
+      "✨ Magic happens ✨",
+      "Stay awesome!",
+      "Spread happiness!",
+      "Remember to relax"
+    ];
+
+    const emojis = [
+      "🌟", "🦋", "🌈", "🎨", "🌺", "🎵", "🌸", "✨", "🍀", "🎪",
+      "🌤️", "🎠", "🎡", "🎢", "🎪", "🌈", "🦄", "🎈", "🎉", "🎊"
+    ];
+
+    // Create audio objects for spark, emoji and message sound effects
+    const sparkSound = new Audio('sound-effect-twinklesparkle-115095.mp3'); // Replace with your actual spark sound file path
+
+    function createSpark(x, y) {
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      
+      // Create SVG for spark
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "100");
+      svg.setAttribute("height", "100");
+      
+      // Random number of points for variety
+      const points = Math.floor(Math.random() * 5) + 5;
+      const radius = 50;
+      let path = "";
+      
+      for (let i = 0; i < points * 2; i++) {
+        const angle = (i * Math.PI) / points;
+        const r = i % 2 === 0 ? radius : radius / 2;
+        const pX = 50 + Math.cos(angle) * r;
+        const pY = 50 + Math.sin(angle) * r;
+        path += (i === 0 ? "M" : "L") + pX + "," + pY;
+      }
+      path += "Z";
+      
+      const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pathElement.setAttribute("d", path);
+      pathElement.setAttribute("fill", `hsl(${Math.random() * 360}, 100%, 70%)`);
+      
+      svg.appendChild(pathElement);
+      spark.appendChild(svg);
+      
+      spark.style.left = (x - 50) + 'px';
+      spark.style.top = (y - 50) + 'px';
+      document.body.appendChild(spark);
+      
+      setTimeout(() => spark.remove(), 1000);
+    }
+
+    function createEmoji(x, y) {
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji';
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = x + 'px';
+      emoji.style.top = y + 'px';
+      document.body.appendChild(emoji);
+
+      // Play emoji sound effect
+      emojiSound.currentTime = 0;
+      emojiSound.play();
+      
+      setTimeout(() => emoji.remove(), 2000);
+    }
+
+    function createMessage(x, y) {
+      const message = document.createElement('div');
+      message.className = 'message';
+      message.textContent = messages[Math.floor(Math.random() * messages.length)];
+      message.style.left = x + 'px';
+      message.style.top = y + 'px';
+      document.body.appendChild(message);
+
+      // Play message sound effect
+      messageSound.currentTime = 0;
+      messageSound.play();
+      
+      setTimeout(() => message.remove(), 2000);
+    }
+
+    let clickCount = 0;
+    const handleInteraction = (e) => {
+      const x = e.clientX || e.touches[0].clientX;
+      const y = e.clientY || e.touches[0].clientY;
+      
+      // Play spark sound effect for each interaction
+      sparkSound.currentTime = 0;
+      sparkSound.play();
+
+      clickCount++;
+      
+      // Create multiple sparks in a circle
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const offsetX = Math.cos(angle) * 20;
+        const offsetY = Math.sin(angle) * 20;
+        createSpark(x + offsetX, y + offsetY);
+      }
+      
+      // Every third click adds an emoji
+      if (clickCount % 3 === 0) {
+        createEmoji(x, y);
+      }
+      
+      // Every fifth click shows a message
+      if (clickCount % 5 === 0) {
+        createMessage(x, y);
+      }
+    };
+
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+  </script>
+</body>
+</html>

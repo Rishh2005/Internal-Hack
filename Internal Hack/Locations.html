@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/1c03889634.js" crossorigin="anonymous"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" defer></script>
+    <title>HealthConnect Hospitals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f0f9ff;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            margin-left: 20px;
+            font-weight: bold;
+            color: #1e88e5;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .side-nav {
+            width: 230px;
+            background-color: #ffffff;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 68px);
+            position: fixed;
+            top: 73px;
+            left: 0;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        .side-nav button {
+            background: none;
+            border: none;
+            color: #000000;
+            font-size: 1.5rem;
+            margin: 10px;
+            align-self: flex-end;
+            cursor: pointer;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .side-nav ul li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .side-nav ul li a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .side-nav ul li a img {
+            height: 20px;
+            width: 20px;
+            margin-right: 5px;
+        }
+
+        .side-nav ul li a:hover {
+            transform: scale(1.05);
+            color: #1e88e5;
+        }
+
+        .side-nav ul li a:active {
+          transform: scale(0.95);
+        }
+
+        .open-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            background: none;
+            border: none;
+        }
+
+        .open-btn:focus {
+            outline: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .main-container {
+            margin-left: 4%;
+            transition: margin-left 0.3s;
+        }
+
+        .nh-header {
+            margin: 30px 2rem 0;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2564ec;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .map-container {
+            position: relative;
+            height: 450px;
+            width: 90%;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .search-bar-map {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar-map input {
+            height: 40px;
+            width: 95%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .hospital-list-container {
+            width: 100%;
+        }
+
+        .hospital-list-header {
+            font-size: 2rem;
+            color: #1e3a8a;
+            margin-bottom: 1rem; 
+        }
+
+        .hospital-list {
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hospital-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .hospital-list li {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .hospital-list li:hover {
+            background-color: #e7f0ff;
+            border-color: #2564ec;
+        }
+
+        .hospital-list a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .hospital-list a:hover {
+            color: #1e88e5;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #fff;
+            margin-top: 3rem;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        footer .left {
+            display: flex;
+            align-items: center;
+        }
+
+        footer .left p {
+            margin: 0;
+        }
+
+        footer .right {
+            display: flex;
+            align-items: center;
+        }
+
+        footer a {
+            color: #1e88e5;
+            margin: 0 0.5rem;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .language-select {
+            margin-left: 1rem;
+        }
+
+        .language-select select {
+            padding: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        @media screen and (max-width: 1024px) {
+          .main-container {
+            padding: 1.5rem;
+          }
+
+          .hospital-list-container {
+            padding: 0 1rem;
+          }
+        }
+
+        @media screen and (max-width: 768px) {
+          .main-container {
+            padding: 1rem;
+          }
+
+          .map-container {
+            width: 100%;
+            height: 350px;
+          }
+
+          .hospital-list-container {
+            padding: 0;
+          }
+
+          .hospital-list {
+            padding: 0.5rem;
+          }
+        }
+
+        @media screen and (max-width: 480px) {
+          .main-container {
+            padding: 0.5rem;
+          }
+
+          .hospital-list-container {
+            padding: 0;
+          }
+
+          .map-container {
+            height: 300px;
+          }
+        }
+    </style>
+</head>
+<body>
+  <header class="navbar">
+    <button class="open-btn" id="openNav" id="closeNav"><i class="fa fa-bars"></i></button>
+      <div class="logo">
+          <img src="styles/imgs/logo.png">
+          <span>HealthConnect</span>
+      </div>
+  </header>
+  <div class="side-nav" id="sideNav">
+      <button id="closeNav">&times;</button>
+      <ul>
+          <li><a href="db.html"><img src="styles/imgs/home.png">Dashboard</a></li>
+          <li><a href="nh.html"><img src="styles/imgs/location.png">Nearby Hospitals & Medical Shops</a></li>
+          <li><a href="hc.html"><img src="styles/imgs/healthcare.png">Health Analysis</a></li>
+          <li><a href="rec.html"><img src="styles/imgs/health-check.png">Records</a></li>
+          <li><a href="apb.html"><img src="styles/imgs/calendar.png">Appointments</a></li>
+          <li><a href="profile.html"><img src="styles/imgs/user.png">Profile</a></li>
+          <li><a href="st.html"><img src="styles/imgs/settings.png">Settings</a></li>
+      </ul>
+  </div>
+  <main>
+    <div class="nh-header">
+      <h1>Nearby Hospitals</h1>
+    </div>
+    <div class="main-container">
+        <!-- Map Container -->
+        <div class="map-container">
+            <div class="search-bar-map">
+                <input
+                  type="text"
+                  id="searchBar"
+                  placeholder="Search hospitals by name or address...."
+                  onkeyup="filterHospitals()"
+                />
+            </div>
+            <div id="map"></div>
+        </div>
+
+        <!-- Hospital List Container -->
+        <div class="hospital-list-container">
+            <h2 class="hospital-list-header">Nearby Hospitals List</h2>
+            <div class="hospital-list">
+                <ul id="hospitalList"></ul>
+            </div>
+        </div>
+    </div>
+  </main>
+  <footer>
+    <div class="left">
+      <p>© 2023 HealthConnect. All rights reserved.</p>
+    </div>
+    <div class="right">
+        <div class="language-select">
+            <label for="language">Language: </label>
+            <select id="language">
+              <option value="en">English</option>
+            </select>
+        </div>
+        <a href="au.html">About Us</a>
+        <a href="#">Meet Our Team</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+    </div>
+  </footer>
+  <script>
+    const sideNav = document.getElementById('sideNav');
+        const openNav = document.getElementById('openNav');
+        const closeNav = document.getElementById('closeNav');
+        const mainContent = document.getElementById('mainContent');
+
+        openNav.addEventListener('click', () => {
+        const isOpen = sideNav.classList.contains('open');
+        if (isOpen) {
+            sideNav.classList.remove('open');
+            mainContent.classList.remove('shifted');
+        } else {
+            sideNav.classList.add('open');
+            mainContent.classList.add('shifted');
+        }
+    });
+
+    closeNav.addEventListener('click', () => {
+        sideNav.classList.remove('open');
+        mainContent.classList.remove('shifted');
+    });
+
+    let map;
+    let hospitals = [];
+    let userLocation = { lat: 0, lng: 0 };
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+      });
+
+      // Get user location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            map.setCenter(userLocation);
+            fetchNearbyHospitals(userLocation);
+          },
+        );
+      } else {
+        alert("Geolocation not supported by your browser.");
+        fetchNearbyHospitals(defaultLocation);
+      }
+    }
+
+    function fetchNearbyHospitals(location) {
+      const apiKey = "c503613083b94b5b94898b44a0e09694";
+      const apiUrl = `https://api.geoapify.com/v2/places?categories=healthcare.hospital&filter=circle:77.1667598,28.6521708,2000&bias=proximity:77.1667598,28.6521708&limit=20&apiKey=c503613083b94b5b94898b44a0e09694`;
+
+      document.getElementById("hospitalList").innerHTML =
+        "<p class='loading-message'>Loading nearby hospitals...</p>";
+
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          hospitals = data.features; // GeoFy API returns an array in "features"
+          displayHospitalList();
+          addMarkersToMap();
+        })
+        .catch((error) => {
+          console.error("Error fetching hospital data:", error);
+          document.getElementById("hospitalList").innerHTML =
+            "<p class='loading-message'>Failed to load hospitals.</p>";
+        });
+    }
+
+    function displayHospitalList() {
+      const hospitalList = document.getElementById("hospitalList");
+      if (!hospitals || hospitals.length === 0) {
+        hospitalList.innerHTML =
+          "<p class='loading-message'>No hospitals found nearby.</p>";
+        return;
+      }
+
+      hospitalList.innerHTML = hospitals
+        .map((hospital) => {
+          const name = hospital.properties.name || "Unnamed Hospital";
+          const address = hospital.properties.address_line2 || "Not Available";
+          const lat = hospital.geometry.coordinates[1];
+          const lng = hospital.geometry.coordinates[0];
+          const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+          return `
+            <li class="hospital-item">
+              <a href="${googleMapsUrl}">
+                <h3>${name}</h3>
+                <p>Address: ${address}</p>
+              </a>
+            </li>
+          `;
+        })
+        .join("");
+    }
+
+    function addMarkersToMap() {
+      hospitals.forEach((hospital) => {
+        const marker = new google.maps.Marker({
+          position: {
+            lat: hospital.geometry.coordinates[1],
+            lng: hospital.geometry.coordinates[0],
+          },
+          map,
+          title: hospital.properties.name,
+        });
+
+        marker.addListener("click", () => {
+          map.setCenter(marker.getPosition());
+        });
+      });
+    }
+
+    function viewDetails(name) {
+      alert(`Viewing details for hospital: ${name}`);
+    }
+
+    function filterHospitals() {
+      const searchQuery = document
+        .getElementById("searchBar")
+        .value.toLowerCase();
+
+      const filteredHospitals = hospitals.filter((hospital) =>
+        (hospital.properties.name || "")
+          .toLowerCase()
+          .includes(searchQuery)
+      );
+
+      const hospitalList = document.getElementById("hospitalList");
+      if (!filteredHospitals || filteredHospitals.length === 0) {
+        hospitalList.innerHTML =
+          "<p class='loading-message'>No hospitals found matching your search.</p>";
+        return;
+      }
+
+      hospitalList.innerHTML = filteredHospitals
+        .map(
+          (hospital) => `
+        <li>
+          <h3>${hospital.properties.name || "Unnamed Hospital"}</h3>
+          <p>Address: ${hospital.properties.address_line2 || "Not Available"}</p>
+        </li>
+      `
+        )
+        .join("");
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/1c03889634.js" crossorigin="anonymous"></script>
+    <title>HealthConnect Appointment</title>
+    <style>
+        :root {
+            --primary-color: #1e88e5;
+            --secondary-color: #2564ec;
+            --background-color: #f0f9ff;
+            --text-color: #333;
+            --white-color: #fff;
+            --error-color: #ff0000ad;
+            --success-color: #009a05b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .navbar, footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--white-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .side-nav {
+            width: 230px;
+            background-color: var(--white-color);
+            color: var(--text-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 68px);
+            position: fixed;
+            top: 73px;
+            left: 0;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        .side-nav button, .open-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .side-nav ul li a {
+            text-decoration: none;
+            color: var (--text-color);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .side-nav ul li a img {
+            height: 20px;
+            width: 20px;
+            margin-right: 5px;
+        }
+
+        .side-nav ul li a:hover {
+            transform: scale(1.05);
+            color: var(--primary-color);
+        }
+
+        .main-container {
+            margin-left: 4%;
+            transition: margin-left 0.3s;
+        }
+
+        .apb-header {
+            margin: 30px 2rem 0;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .container {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        .card {
+            background-color: var(--white-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .time-slots button {
+            padding: 15px;
+            background-color: #505050;
+            color: var(--white-color);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .time-slots button:hover, .time-slots button.selected {
+            background-color: var(--primary-color);
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        table td.selected {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border-radius: 100%;
+        }
+
+        .select-hospital select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .bookappointment {
+            max-width: 200px; 
+            height: 50px;
+            padding: 15px; 
+            background-color: var(--secondary-color); 
+            color: var(--white-color);
+            font-size: 15px; 
+            border: none; 
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .bookappointment:hover {
+            transform: scale(1.05);
+            background-color: var(--primary-color);
+        }
+
+        .bookappointment:active {
+            transform: scale(0.9);
+        }
+
+        .notification {
+            position: fixed;
+            margin: 10px;
+            margin-left: 35px;
+            border-radius: 30px;
+            padding: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .notification.show {
+            display: block;
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background-color: var(--error-color);
+            color: var(--white-color);
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+            color: var(--white-color);
+        }
+
+        footer a {
+            color: var(--primary-color);
+            margin: 0 0.5rem;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .language-select select {
+            padding: 0.3rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <button class="open-btn" id="openNav"><i class="fa fa-bars"></i></button>
+        <div class="logo">
+            <img src="styles/imgs/logo.png" alt="HealthConnect Logo">
+            <span>HealthConnect</span>
+        </div>
+    </header>
+    <div class="side-nav" id="sideNav">
+        <button id="closeNav">&times;</button>
+        <ul>
+            <li><a href="db.html"><img src="styles/imgs/home.png" alt="Dashboard Icon">Dashboard</a></li>
+            <li><a href="nh.html"><img src="styles/imgs/location.png" alt="Nearby Hospitals Icon">Nearby Hospitals & Medical Shops</a></li>
+            <li><a href="hc.html"><img src="styles/imgs/healthcare.png" alt="Health Analysis Icon">Health Analysis</a></li>
+            <li><a href="rec.html"><img src="styles/imgs/health-check.png" alt="Records Icon">Records</a></li>
+            <li><a href="apb.html"><img src="styles/imgs/calendar.png" alt="Appointments Icon">Appointments</a></li>
+            <li><a href="profile.html"><img src="styles/imgs/user.png" alt="Profile Icon">Profile</a></li>
+            <li><a href="st.html"><img src="styles/imgs/settings.png" alt="Settings Icon">Settings</a></li>
+        </ul>
+    </div>
+    <main>
+        <div class="apb-header">
+            <h1>Schedule an Appointment</h1>
+        </div>
+        <div id="notification" class="notification"></div>
+        <div class="container">
+            <div class="select-hospital">
+                <div class="card">
+                    <h2>Select a Hospital</h2>
+                    <select id="hospitalSelect">
+                        <option>Select a hospital</option>
+                        <option>Hospital A</option>
+                        <option>Hospital B</option>
+                        <option>Hospital C</option>
+                    </select>
+                </div>
+            </div>
+            <div class="select-hospital">
+                <div class="card">
+                    <h2>Select Doctor</h2>
+                    <select id="doctorSelect">
+                        <option>Doctor's Name</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="card">
+                        <h2>Select a Date</h2>
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <h2>Available Time Slots</h2>
+                        <div class="time-slots">
+                            <button>9:00 AM</button>
+                            <button>10:00 AM</button>
+                            <button>11:00 AM</button>
+                            <button>1:00 PM</button>
+                            <button>2:00 PM</button>
+                            <button>3:00 PM</button>
+                            <button>4:00 PM</button>
+                            <button>5:00 PM</button>
+                            <button>6:00 PM</button>
+                            <button>7:00 PM</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="bookappointment" id="bookappointment">Book Appointment</button>
+        </div>
+    </main>
+    <footer>
+        <div class="left">
+            <p>© 2025 HealthConnect. All rights reserved.</p>
+        </div>
+        <div class="right">
+            <div class="language-select">
+                <label for="language">Language: </label>
+                <select id="language">
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <a href="au.html">About Us</a>
+            <a href="#">Meet Our Team</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+    <script>
+        const sideNav = document.getElementById('sideNav');
+        const openNav = document.getElementById('openNav');
+        const closeNav = document.getElementById('closeNav');
+        const mainContent = document.querySelector('main');
+
+        openNav.addEventListener('click', () => {
+            sideNav.classList.toggle('open');
+            mainContent.classList.toggle('shifted');
+        });
+
+        closeNav.addEventListener('click', () => {
+            sideNav.classList.remove('open');
+            mainContent.classList.remove('shifted');
+        });
+
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        function generateCalendar(calendarId) {
+            const calendar = document.getElementById(calendarId);
+            calendar.innerHTML = "";
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            const monthNames = [
+                "January", "February", "March", "April", "May", 
+                "June", "July", "August", "September", "October", 
+                "November", "December"
+            ];
+
+            const header = document.createElement("div");
+            header.style.textAlign = "left";
+            header.style.marginLeft = "80px";
+            header.style.marginBottom = "10px";
+            header.style.fontWeight = "bold";
+            header.innerHTML = `
+                <button id="prevMonth" style="background: none; border: none; cursor: pointer; margin-right: 10px; font-size: 1rem;">&#x3c;</button>
+                ${monthNames[currentMonth]} ${currentYear}
+                <button id="nextMonth" style="background: none; border: none; cursor: pointer; margin-left: 10px; font-size: 1rem;">&#x3e;</button>
+            `;
+            calendar.appendChild(header);
+
+            const table = document.createElement("table");
+            const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const headerRow = document.createElement("tr");
+
+            daysOfWeek.forEach(day => {
+                const th = document.createElement("th");
+                th.textContent = day;
+                headerRow.appendChild(th);
+            });
+
+            table.appendChild(headerRow);
+
+            let row = document.createElement("tr");
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement("td");
+                emptyCell.classList.add("inactive");
+                row.appendChild(emptyCell);
+            }
+
+            for (let date = 1; date <= daysInMonth; date++) {
+                if ((firstDay + date - 1) % 7 === 0) {
+                    table.appendChild(row);
+                    row = document.createElement("tr");
+                }
+
+                const cell = document.createElement("td");
+                cell.textContent = date;
+                cell.classList.add("active-date");
+                row.appendChild(cell);
+
+                cell.addEventListener("click", () => {
+                    document.querySelectorAll(".active-date").forEach(c => c.classList.remove("selected"));
+                    cell.classList.add("selected");
+                    console.log(`Selected Date: ${date} ${monthNames[currentMonth]} ${currentYear}`);
+                });
+            }
+
+            table.appendChild(row);
+            calendar.appendChild(table);
+
+            document.getElementById("prevMonth").addEventListener("click", () => {
+                currentMonth -= 1;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear -= 1;
+                }
+                generateCalendar(calendarId);
+            });
+
+            document.getElementById("nextMonth").addEventListener("click", () => {
+                currentMonth += 1;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear += 1;
+                }
+                generateCalendar(calendarId);
+            });
+        }
+
+        generateCalendar("calendar");
+
+        const timeButtons = document.querySelectorAll('.time-slots button');
+        let selectedTime = null;
+        timeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                timeButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                selectedTime = button.textContent;
+                console.log(`Selected Time: ${selectedTime}`);
+            });
+        });
+
+        const hospitalSelect = document.getElementById('hospitalSelect');
+        let selectedHospital = null;
+        hospitalSelect.addEventListener('change', () => {
+            selectedHospital = hospitalSelect.value;
+            console.log(`Selected Hospital: ${selectedHospital}`);
+        });
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        const bookButton = document.getElementById('bookappointment');
+        bookButton.addEventListener('click', () => {
+            if (!selectedTime || !selectedHospital || selectedHospital === "Select a hospital") {
+                showNotification('Please select all details.', 'error');
+                return;
+            }
+            showNotification('Appointment booked successfully!', 'success');
+            console.log({
+                time: selectedTime,
+                hospital: selectedHospital
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+

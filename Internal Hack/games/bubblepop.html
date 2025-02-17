@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Pop</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #87CEEB, #4682B4);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        #score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255,255,255,0.9),
+                rgba(255,255,255,0.4)
+            );
+            box-shadow: 
+                inset -5px -5px 15px rgba(0,0,0,0.1),
+                inset 5px 5px 15px rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: transform 0.2s;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+        }
+
+        .bubble.pop {
+            animation: pop 0.3s ease-out forwards;
+        }
+
+        .score-popup {
+            position: absolute;
+            color: #fff;
+            font-size: 1.2em;
+            pointer-events: none;
+            animation: scoreFloat 1s ease-out forwards;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes scoreFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Bubble Pop Game</h1>
+    <div id="score">Score: 0</div>
+    <script>
+        const scoreElement = document.getElementById('score');
+        let score = 0;
+
+        // Create audio object for bubble pop sound effect
+        const popSound = new Audio('happy-pop-3-185288.mp3'); // Replace with your actual pop sound file path
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            const size = Math.random() * 50 + 30; // Random size between 30 and 80
+            bubble.className = 'bubble';
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
+            bubble.style.top = Math.random() * (window.innerHeight - size) + 'px';
+
+            bubble.addEventListener('click', () => {
+                popSound.currentTime = 0; // Reset sound to play from the start
+                popSound.play(); // Play pop sound
+                score++; // Increase score
+                scoreElement.textContent = 'Score: ' + score; // Update score display
+                bubble.classList.add('pop'); // Add pop animation
+                setTimeout(() => bubble.remove(), 300); // Remove bubble after pop animation
+            });
+
+            document.body.appendChild(bubble);
+
+            // Remove bubble after 3 seconds if not popped
+            setTimeout(() => {
+                if (document.body.contains(bubble)) {
+                    bubble.remove();
+                }
+            }, 3000);
+        }
+
+        // Create a new bubble every second
+        setInterval(createBubble, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthConnect Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #3b82f6;
+            --light-blue: #eff6ff;
+            --dark-blue: #1e3a8a;
+            --red: #ef4444;
+            --green: #22c55e;
+            --white: #ffffff;
+            --gray: #4b5563;
+            --bg-shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background-color: var(--light-blue);
+            line-height: 1.6;
+        }
+
+        header, footer {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: 0 1px 3px var(--bg-shadow);
+        }
+
+        .nav-container, .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-blue);
+        }
+
+        .language-select {
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            background: var(--white);
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px var(--bg-shadow);
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+
+        .metric-value.steps { color: var(--primary-blue); }
+        .metric-value.heart { color: var(--red); }
+        .metric-value.bp { color: var(--primary-blue); }
+        .metric-value.weight { color: var(--green); }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card, .appointments-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px var(--bg-shadow);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-blue);
+        }
+
+        .appointments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .edit-btn {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .edit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .appointment-item {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .appointment-title {
+            color: var(--primary-blue);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-location, .appointment-time {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container, .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chatbot-toggler {
+      position: fixed;
+      bottom: 30px;
+      right: 35px;
+      outline: none;
+      border: none;
+      height: 60px;
+      width: 60px;
+      display: flex;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #1e88e5;
+      transition: all 0.2s ease;
+    }
+
+    .chatbot-toggler:hover {
+      transform: scale(1.10);
+    }
+
+    body.show-chatbot .chatbot-toggler {
+      transform: rotate(90deg);
+    }
+
+    .chatbot-toggler span {
+      color: #fff;
+      position: absolute;
+    }
+
+    .chatbot-toggler img {
+      height: 25px;
+      width: 25px;
+    }
+
+    .chatbot-toggler span:last-child,
+    body.show-chatbot .chatbot-toggler span:first-child {
+      opacity: 0;
+    }
+
+    body.show-chatbot .chatbot-toggler span:last-child {
+      opacity: 1;
+    }
+
+    .chatbot {
+      position: fixed;
+      right: 35px;
+      bottom: 90px;
+      width: 420px;
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.5);
+      transform-origin: bottom right;
+      box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
+        0 32px 64px -48px rgba(0, 0, 0, 0.5);
+      transition: all 0.1s ease;
+    }
+
+    body.show-chatbot .chatbot {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .chatbot header {
+      padding: 16px 0;
+      position: relative;
+      text-align: center;
+      color: #fff;
+      background: #1e88e5;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chatbot header span {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      display: none;
+      cursor: pointer;
+      transform: translateY(-50%);
+    }
+
+    header h2 {
+      font-size: 1.4rem;
+    }
+
+    .chatbot .chatbox {
+      overflow-y: auto;
+      height: 450px;
+      padding: 30px 20px 100px;
+    }
+
+    .chatbot :where(.chatbox, textarea)::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chatbot :where(.chatbox, textarea)::-webkit-scrollbar-track {
+      background: #fff;
+      border-radius: 25px;
+    }
+
+    .chatbot :where(.chatbox, textarea)::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 25px;
+    }
+
+    .chatbox .chat {
+      display: flex;
+      list-style: none;
+    }
+
+    .chatbox .outgoing {
+      margin: 20px 0;
+      justify-content: flex-end;
+    }
+
+    .chatbox .incoming span {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      cursor: default;
+      text-align: center;
+      line-height: 32px;
+      align-self: flex-end;
+      background: #1e88e5;
+      border-radius: 4px;
+      margin: 0 10px 7px 0;
+    }
+
+    .chatbox .chat p {
+      white-space: pre-wrap;
+      padding: 12px 16px;
+      border-radius: 10px 10px 0 10px;
+      max-width: 75%;
+      color: #fff;
+      font-size: 0.95rem;
+      background: #1e88e5;
+    }
+
+    .chatbox .incoming p {
+      border-radius: 10px 10px 10px 0;
+    }
+
+    .chatbox .chat p.error {
+      color: #721c24;
+      background: #f8d7da;
+    }
+
+    .chatbox .incoming p {
+      color: #000;
+      background: #f2f2f2;
+    }
+
+    .chatbot .chat-input {
+      display: flex;
+      gap: 5px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      padding: 3px 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input textarea {
+      height: 55px;
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      max-height: 180px;
+      padding: 15px 15px 15px 0;
+      font-size: 0.95rem;
+    }
+
+    .chat-input span {
+      align-self: flex-end;
+      color: #1e88e5;
+      cursor: pointer;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      visibility: hidden;
+      font-size: 1.35rem;
+    }
+
+    .chat-input textarea:valid~span {
+      visibility: visible;
+    } 
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="Overview.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span>HealthConnect</span>
+                </a>
+            </div>
+            <nav>
+                <a href="Dashboard.html" class="active" data-lang="dashboard">Dashboard</a>
+                <a href="Games.html" data-lang="games">Games</a>
+                <a href="Records.html" data-lang="records">Records</a>
+                <a href="Appointment.html" data-lang="appointments">Appointments</a>
+                <a href="Profile.html" data-lang="profile">Profile</a>
+                <a href="About Us.html" data-lang="about">About</a>
+                <select class="language-select" id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </nav>
+        </div>
+    </header>
+<main class="container mx-auto px-4 py-8">
+
+            <div id="results" class="mt-4"></div>
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div>
+                        <p class="metric-label" data-lang="steps">Steps</p>
+                        <p class="metric-value steps">8,234</p>
+                    </div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                </div>
+            </div>
+          <!-- ChatBot -->
+  <button class="chatbot-toggler">
+    <img src="styles/imgs/chat-bubble.png" alt="Chat Icon">
+    <span class="material-symbols-outlined">✖</span>
+  </button>
+  <div class="chatbot">
+    <header>
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <img src="styles/imgs/joyful.png" alt="Chatbot Logo" style="width: 40px; height: 40px; margin-right: 10px;">
+      <h2 style="margin: 0;">Med Ai</h2>
+      <span class="close-btn material-symbols-outlined">✖</span>
+    </header>
+    <ul class="chatbox">
+      <li class="chat incoming">
+        <span class="material-symbols-outlined">HC</span>
+        <p>Hello! <br>I'm your HealthConnect AI assistant. How can I help you today?<br><br>You can ask me about:<br><br>1. Your health records<br><br>2. Appointment scheduling<br><br>3. General health advice<br><br>4. HealthConnect features<br><br>What would you like to know?</p>
+      </li>
+    </ul>
+    <div class="chat-input">
+      <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
+      <span id="send-btn" class="material-symbols-rounded">➤</span>
+    </div>
+  </div>
+
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div>
+                        <p class="metric-label" data-lang="heartRate">Heart Rate</p>
+                        <p class="metric-value heart">72 bpm</p>
+                    </div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div>
+                        <p class="metric-label" data-lang="bloodPressure">Blood Pressure</p>
+                        <p class="metric-value bp">120/80</p>
+                    </div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div>
+                        <p class="metric-label" data-lang="weight">Weight</p>
+                        <p class="metric-value weight">150 lbs</p>
+                    </div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3v18M3 12h18"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h2 class="chart-title" data-lang="healthOverview">Health Overview</h2>
+                <canvas id="healthChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h2 class="chart-title" data-lang="weeklyActivity">Weekly Activity</h2>
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+       
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2023 HealthConnect. <span data-lang="rights">All rights reserved.</span></p>
+            <div class="footer-links">
+                <select class="language-select" id="footerLanguageSelect">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="te">தెలుங్కు</option>
+                </select>
+                <a href="About Us.html" data-lang="privacy">Privacy Policy</a>
+                <a href="About Us.html" data-lang="terms">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        
+        // Global language variable
+        let currentLang = 'en';
+
+        // Language translations
+        const translations = {
+            en: {
+                dashboard: "Dashboard",
+                games: "Games",
+                records: "Records",
+                appointments: "Appointments",
+                profile: "Profile",
+                about: "About",
+                steps: "Steps",
+                heartRate: "Heart Rate",
+                bloodPressure: "Blood Pressure",
+                weight: "Weight",
+                healthOverview: "Health Overview",
+                weeklyActivity: "Weekly Activity",
+                upcomingAppointments: "Upcoming Appointments",
+                editData: "Edit Data",
+                rights: "All rights reserved.",
+                privacy: "Privacy Policy",
+                terms: "Terms of Service"
+            },
+            hi: {
+                dashboard: "डैशबोर्ड",
+                games: "खेल",
+                records: "रिकॉर्ड्स",
+                appointments: "नियुक्तियाँ",
+                profile: "प्रोफ़ाइल",
+                about: "के बारे में",
+                steps: "कदम",
+                heartRate: "हृदय गति",
+                bloodPressure: "रक्तचाप",
+                weight: "वज़न",
+                healthOverview: "स्वास्थ्य अवलोकन",
+                weeklyActivity: "साप्ताहिक गतिविधि",
+                upcomingAppointments: "आगामी नियुक्तियाँ",
+                editData: "डेटा संपादित करें",
+                rights: "सर्वाधिकार सुरक्षित।",
+                privacy: "गोपनीयता नीति",
+                terms: "सेवा की शर्तें"
+            },
+            ta: {
+                dashboard: "டாஷ்போர்டு",
+                games: "விளையாட்டுகள்",
+                records: "பதிவுகள்",
+                appointments: "நியமனங்கள்",
+                profile: "சுயவிவரம்",
+                about: "பற்றி",
+                steps: "காலடி",
+                heartRate: "இதய துடிப்பு",
+                bloodPressure: "இரத்த அழுத்தம்",
+                weight: "எடை",
+                healthOverview: "ஆரோக்கிய மேற்பார்வை",
+                weeklyActivity: "வாராந்திர செயல்பாடுகள்",
+                upcomingAppointments: "வரவிருக்கும் நியமனங்கள்",
+                editData: "தரவை திருத்துக",
+                rights: "எல்லா உரிமைகளும் பாதுகாக்கப்பட்டுள்ளன.",
+                privacy: "தனியுரிமைக் கொள்கை",
+                terms: "வழக்குகள் மற்றும் நிபந்தனைகள்"
+            },
+            te: {
+                dashboard: "డాష్‌బోర్డు",
+                games: "గేమ్స్",
+                records: "రికార్డులు",
+                appointments: "అపాయింట్‌మెంట్లు",
+                profile: "ప్రొఫైల్",
+                about: "గురించి",
+                steps: "పాదాలు",
+                heartRate: "హృదయ స్పందన",
+                bloodPressure: "రక్తపోటు",
+                weight: "బరువు",
+                healthOverview: "ఆరోగ్య అవలోకనం",
+                weeklyActivity: "వారం వారీ కార్యకలాపాలు",
+                upcomingAppointments: "తర్వాతి అపాయింట్‌మెంట్లు",
+                editData: "డేటా సవరించు",
+                rights: "అన్ని హక్కులు రిజర్వ్‌ చేయబడ్డాయి.",
+                privacy: "గోప్యతా విధానం",
+                terms: "సేవా నిబంధనలు"
+            }
+        };
+
+        // Translation update logic
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                const key = el.getAttribute('data-lang');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // Language select change handlers
+        document.getElementById('languageSelect').addEventListener('change', e => {
+            currentLang = e.target.value;
+            updateLanguage(currentLang);
+            document.getElementById('footerLanguageSelect').value = currentLang;
+        });
+        document.getElementById('footerLanguageSelect').addEventListener('change', e => {
+            currentLang = e.target.value;
+            updateLanguage(currentLang);
+            document.getElementById('languageSelect').value = currentLang;
+        });
+
+        // Initialize Health Overview Chart (Line Chart) with different colours
+        const healthCtx = document.getElementById('healthChart').getContext('2d');
+        const healthChart = new Chart(healthCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Heart Rate (bpm)',
+                    data: [40, 72, 45, 65, 74, 50, 73],
+                    borderColor: '#FF5733', // new line color
+                    backgroundColor: 'rgba(255,87,51,0.1)', // new area color
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true }
+                }
+            }
+        });
+
+        // Initialize Weekly Activity Chart (Bar Chart) with different colours for each bar
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Steps Count',
+                    data: [8000, 7000, 5400, 7200, 8100, 6300, 8500],
+                    // array of colours for each bar
+                    backgroundColor: [
+                        '#3b82f6', // blue
+                        '#ef4444', // red
+                        '#22c55e', // green
+                        '#9333ea', // purple
+                        '#f59e0b', // amber
+                        '#14b8a6', // teal
+                        '#d97706'  // orange
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Toggle appointments data edit mode
+        let editingMode = false;
+        document.querySelector('.edit-btn').addEventListener('click', function() {
+            const appointmentItems = document.querySelectorAll('.appointment-item');
+            editingMode = !editingMode;
+            appointmentItems.forEach(item => {
+                item.contentEditable = editingMode;
+                item.style.border = editingMode ? "1px dashed var(--primary-blue)" : "";
+            });
+            // Toggle button text between "Edit Data" and "Save Data"
+            this.textContent = editingMode ? "Save Data" : translations[currentLang].editData;
+        });
+
+        // Chatbot functionality
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPopup = document.getElementById('chatbotPopup');
+        const chatbotClose  = document.getElementById('chatbotClose');
+        const chatInput = document.getElementById('chatInput');
+        const sendChat = document.getElementById('sendChat');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+
+        // Replace with your actual API endpoint and key
+        const CHATBOT_API_ENDPOINT = '';
+        const CHATBOT_API_KEY = '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';
+
+        // Toggle popup display
+        chatbotToggle.addEventListener('click', () => {
+            chatbotPopup.style.display = 'flex';
+        });
+        chatbotClose.addEventListener('click', () => {
+            chatbotPopup.style.display = 'none';
+        });
+
+        // Function to append message to chat window
+        function appendMessage(sender, text) {
+            const messageEl = document.createElement('div');
+            messageEl.style.marginBottom = '0.5rem';
+            messageEl.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatbotMessages.appendChild(messageEl);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        // Handle sending chat message
+        sendChat.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            appendMessage('You', message);
+            chatInput.value = '';
+
+            // Call the chatbot API
+            fetch(CHATBOT_API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + CHATBOT_API_KEY
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Assume the API returns a field "reply"
+                appendMessage('Bot', data.reply || 'Sorry, no reply.');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                appendMessage('Bot', 'Error fetching reply.');
+            });
+        });
+
+        // Language management
+        class LanguageManager {
+            constructor() {
+                this.currentLang = localStorage.getItem('preferredLanguage') || 'en';
+                this.translations = {
+                    en: {
+                        dashboard: "Dashboard",
+                        hospitals: "Hospitals",
+                        records: "Records",
+                        appointments: "Appointments",
+                        profile: "Profile",
+                        about: "About",
+                        steps: "Steps",
+                        heartRate: "Heart Rate",
+                        bloodPressure: "Blood Pressure",
+                        weight: "Weight",
+                        healthOverview: "Health Overview",
+                        weeklyActivity: "Weekly Activity",
+                        upcomingAppointments: "Upcoming Appointments",
+                        editData: "Edit Data",
+                        rights: "All rights reserved.",
+                        privacy: "Privacy Policy",
+                        terms: "Terms of Service"
+                    },
+                    hi: {
+                        dashboard: "डैशबोर्ड",
+                        hospitals: "अस्पताल",
+                        records: "रिकॉर्ड्स",
+                        appointments: "नियुक्तियाँ",
+                        profile: "प्रोफ़ाइल",
+                        about: "के बारे में",
+                        steps: "कदम",
+                        heartRate: "हृदय गति",
+                        bloodPressure: "रक्तचाप",
+                        weight: "वज़न",
+                        healthOverview: "स्वास्थ्य अवलोकन",
+                        weeklyActivity: "साप्ताहिक गतिविधि",
+                        upcomingAppointments: "आगामी नियुक्तियाँ",
+                        editData: "डेटा संपादित करें",
+                        rights: "सर्वाधिकार सुरक्षित।",
+                        privacy: "गोपनीयता नीति",
+                        terms: "सेवा की शर्तें"
+                    },
+                    ta: {
+                        dashboard: "டாஷ்போர்டு",
+                        hospitals: "மருத்துவமனைகள்",
+                        records: "பதிவுகள்",
+                        appointments: "நியமனங்கள்",
+                        profile: "சுயவிவரம்",
+                        about: "பற்றி",
+                        steps: "காலடி",
+                        heartRate: "இதய துடிப்பு",
+                        bloodPressure: "இரத்த அழுத்தம்",
+                        weight: "எடை",
+                        healthOverview: "ஆரோக்கிய மேற்பார்வை",
+                        weeklyActivity: "வாராந்திர செயல்பாடுகள்",
+                        upcomingAppointments: "வரவிருக்கும் நியமனங்கள்",
+                        editData: "தரவை திருத்துக",
+                        rights: "எல்லா உரிமைகளும் பாதுகாக்கப்பட்டுள்ளன.",
+                        privacy: "தனியுரிமைக் கொள்கை",
+                        terms: "வழக்குகள் மற்றும் நிபந்தனைகள்"
+                    },
+                    te: {
+                        dashboard: "డాష్‌బోర్డు",
+                        hospitals: "రోగశాలలు",
+                        records: "రికార్డులు",
+                        appointments: "అపాయింట్‌మెంట్లు",
+                        profile: "ప్రొఫైల్",
+                        about: "గురించి",
+                        steps: "పాదాలు",
+                        heartRate: "హృదయ స్పందన",
+                        bloodPressure: "రక్తపోటు",
+                        weight: "బరువు",
+                        healthOverview: "ఆరోగ్య అవలోకనం",
+                        weeklyActivity: "వారం వారీ కార్యకలాపాలు",
+                        upcomingAppointments: "తర్వాతి అపాయింట్‌మెంట్లు",
+                        editData: "డేటా సవరించు",
+                        rights: "అన్ని హక్కులు రిజర్వ్‌ చేయబడ్డాయి.",
+                        privacy: "గోప్యతా విధానం",
+                        terms: "సేవా నిబంధనలు"
+                    }
+                };
+
+                this.initializeLanguageSelectors();
+                this.updateLanguage(this.currentLang);
+            }
+
+            initializeLanguageSelectors() {
+                const selectors = ['languageSelect', 'footerLanguageSelect'];
+                
+                selectors.forEach(selectorId => {
+                    const selector = document.getElementById(selectorId);
+                    if (selector) {
+                        // Set initial value
+                        selector.value = this.currentLang;
+                        
+                        // Add change listener
+                        selector.addEventListener('change', (e) => {
+                            this.handleLanguageChange(e.target.value);
+                        });
+                    }
+                });
+            }
+
+            handleLanguageChange(newLang) {
+                this.currentLang = newLang;
+                this.updateLanguage(newLang);
+                this.syncLanguageSelectors(newLang);
+                this.saveLanguagePreference(newLang);
+            }
+
+            updateLanguage(lang) {
+                // Update document language
+                document.documentElement.lang = lang;
+                
+                // Update all translatable elements
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.getAttribute('data-lang');
+                    if (this.translations[lang]?.[key]) {
+                        el.textContent = this.translations[lang][key];
+                    }
+                });
+
+                // Dispatch custom event for other components
+                document.dispatchEvent(new CustomEvent('languageChanged', {
+                    detail: { language: lang }
+                }));
+            }
+
+            syncLanguageSelectors(lang) {
+                document.querySelectorAll('.language-select').forEach(select => {
+                    select.value = lang;
+                });
+            }
+
+            saveLanguagePreference(lang) {
+                localStorage.setItem('preferredLanguage', lang);
+            }
+        }
+
+        // Initialize language manager
+        const languageManager = new LanguageManager();
+
+        // Add RTL support for specific languages
+        document.addEventListener('languageChanged', (e) => {
+            const rtlLanguages = ['ar', 'he', 'fa'];
+            document.dir = rtlLanguages.includes(e.detail.language) ? 'rtl' : 'ltr';
+        });
+
+        // Error handling for language switching
+        window.addEventListener('error', (e) => {
+            console.error('Language switching error:', e);
+            // Fallback to English if there's an error
+            languageManager.handleLanguageChange('en');
+        });
+    </script>
+</body>
+</html>

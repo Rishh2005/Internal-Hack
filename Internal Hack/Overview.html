@@ -1,0 +1,397 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   HealthConnect
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+        }
+  </style>
+ </head>
+ <body class="bg-blue-50">
+  <header class="bg-white shadow-sm">
+    <div class="nav-container max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="logo flex items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="text-blue-600 text-xl font-bold ml-2">HealthConnect</span>
+        </div>
+        <nav class="flex space-x-6 items-center">
+            <a href="Dashboard.html" class="text-gray-600 hover:text-blue-600" data-lang="dashboard">Dashboard</a>
+            <a href="Games.html" class="text-gray-600 hover:text-blue-600" data-lang="games">Games</a>
+            <a href="Records.html" class="text-gray-600 hover:text-blue-600" data-lang="records">Records</a>
+            <a href="Appointment.html" class="text-gray-600 hover:text-blue-600" data-lang="appointments">Appointments</a>
+            <a href="Profile.html" class="text-gray-600 hover:text-blue-600" data-lang="profile">Profile</a>
+            <a href="About Us.html" class="text-gray-600 hover:text-blue-600" data-lang="about">About</a>
+            <select class="language-select bg-white border border-gray-200 rounded-lg px-3 py-1" id="languageSelect">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+            </select>
+        </nav>
+    </div>
+</header>
+  <main class="container mx-auto px-4 py-16 text-center">
+   <div id="content-en">
+    <h1 class="text-4xl font-bold text-blue-600">
+     Welcome to HealthConnect
+    </h1>
+    <p class="text-gray-600 mt-4">
+     Your comprehensive healthcare management system. Streamline patient care and hospital management with our integrated features.
+    </p>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-heart text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       Personalized Care
+      </h2>
+      <p class="text-gray-600 mt-2">
+       Get tailored health recommendations and track your progress over time.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-shield-alt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       Secure &amp; Private
+      </h2>
+      <p class="text-gray-600 mt-2">
+       Your health data is protected with state-of-the-art encryption and security measures.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-bolt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       Instant Access
+      </h2>
+      <p class="text-gray-600 mt-2">
+       Access your health records, book appointments, and find nearby hospitals instantly.
+      </p>
+     </div>
+    </div>
+    <div class="mt-8 flex justify-center space-x-4">
+     <a href="Dashboard.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+      Get Started
+     </a>
+     <a href="About Us.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+      Learn More
+     </a>
+    </div>
+   </div>
+   <div class="hidden" id="content-hi">
+    <h1 class="text-4xl font-bold text-blue-600">
+     HealthConnect में आपका स्वागत है
+    </h1>
+    <p class="text-gray-600 mt-4">
+     आपका व्यापक स्वास्थ्य प्रबंधन प्रणाली। हमारे एकीकृत सुविधाओं के साथ रोगी देखभाल और अस्पताल प्रबंधन को सुव्यवस्थित करें।
+    </p>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-heart text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       व्यक्तिगत देखभाल
+      </h2>
+      <p class="text-gray-600 mt-2">
+       स्वास्थ्य सिफारिशें प्राप्त करें और समय के साथ अपनी प्रगति को ट्रैक करें।
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-shield-alt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       सुरक्षित और निजी
+      </h2>
+      <p class="text-gray-600 mt-2">
+       आपका स्वास्थ्य डेटा अत्याधुनिक एन्क्रिप्शन और सुरक्षा उपायों के साथ सुरक्षित है।
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-bolt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       त्वरित पहुंच
+      </h2>
+      <p class="text-gray-600 mt-2">
+       अपने स्वास्थ्य रिकॉर्ड तक पहुंचें, अपॉइंटमेंट बुक करें, और तुरंत पास के अस्पतालों को खोजें।
+      </p>
+     </div>
+    </div>
+    <div class="mt-8 flex justify-center space-x-4">
+     <a href="Dashboard.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+      शुरू करें
+     </a>
+     <a href="About Us.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+      और जानें
+     </a>
+    </div>
+   </div>
+   <div class="hidden" id="content-ta">
+    <h1 class="text-4xl font-bold text-blue-600">
+     HealthConnect க்கு வரவேற்கிறோம்
+    </h1>
+    <p class="text-gray-600 mt-4">
+     உங்கள் விரிவான சுகாதார மேலாண்மை அமைப்பு. எங்கள் ஒருங்கிணைந்த அம்சங்களுடன் நோயாளி பராமரிப்பு மற்றும் மருத்துவமனை மேலாண்மையை ஒழுங்குபடுத்துங்கள்.
+    </p>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-heart text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       தனிப்பயன் பராமரிப்பு
+      </h2>
+      <p class="text-gray-600 mt-2">
+       தனிப்பயன் சுகாதார பரிந்துரைகளைப் பெறுங்கள் மற்றும் காலப்போக்கில் உங்கள் முன்னேற்றத்தைப் பின்தொடருங்கள்.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-shield-alt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       பாதுகாப்பான மற்றும் தனிப்பட்டது
+      </h2>
+      <p class="text-gray-600 mt-2">
+       உங்கள் சுகாதார தரவுகள் நவீன குறியாக்கம் மற்றும் பாதுகாப்பு நடவடிக்கைகளுடன் பாதுகாக்கப்படுகின்றன.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-bolt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       உடனடி அணுகல்
+      </h2>
+      <p class="text-gray-600 mt-2">
+       உங்கள் சுகாதார பதிவுகள், நியமனங்களைப் பதிவு செய்யவும், உடனடியாக அருகிலுள்ள மருத்துவமனைகளைப் பெறவும் அணுகவும்.
+      </p>
+     </div>
+    </div>
+    <div class="mt-8 flex justify-center space-x-4">
+     <a href="Dashboard.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+      தொடங்குங்கள்
+     </a>
+     <a href="About Us.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+      மேலும் அறிக
+     </a>
+    </div>
+   </div>
+   <div class="hidden" id="content-te">
+    <h1 class="text-4xl font-bold text-blue-600">
+     HealthConnect కు స్వాగతం
+    </h1>
+    <p class="text-gray-600 mt-4">
+     మీ సమగ్ర ఆరోగ్య నిర్వహణ వ్యవస్థ. మా సమగ్ర లక్షణాలతో రోగి సంరక్షణ మరియు ఆసుపత్రి నిర్వహణను సులభతరం చేయండి.
+    </p>
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-heart text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       వ్యక్తిగత సంరక్షణ
+      </h2>
+      <p class="text-gray-600 mt-2">
+       వ్యక్తిగత ఆరోగ్య సిఫార్సులను పొందండి మరియు కాలక్రమేణా మీ పురోగతిని ట్రాక్ చేయండి.
+      </p>
+     </div>
+     <div class="bg-white ప-6 rounded-lg shadow-md">
+      <i class="fas fa-shield-alt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       సురక్షితమైన మరియు ప్రైవేట్
+      </h2>
+      <p class="text-gray-600 mt-2">
+       మీ ఆరోగ్య డేటా అత్యాధునిక ఎన్‌క్రిప్షన్ మరియు భద్రతా చర్యలతో రక్షించబడుతుంది.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <i class="fas fa-bolt text-blue-600 text-3xl mb-4">
+      </i>
+      <h2 class="text-xl font-semibold text-gray-800">
+       తక్షణ ప్రాప్యత
+      </h2>
+      <p class="text-gray-600 mt-2">
+       మీ ఆరోగ్య రికార్డులను యాక్సెస్ చేయండి, అపాయింట్‌మెంట్‌లను బుక్ చేయండి మరియు సమీప ఆసుపత్రులను వెంటనే కనుగొనండి.
+      </p>
+     </div>
+    </div>
+    <div class="mt-8 flex justify-center space-x-4">
+     <a href="Dashboard.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+      ప్రారంభించండి
+     </a>
+     <a href="About Us.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+      మరింత తెలుసుకోండి
+     </a>
+    </div>
+   </div>
+  </main>
+  <footer class="bg-white py-4 mt-auto">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <p class="text-gray-600">
+            © 2023 HealthConnect. <span data-lang="rights">All rights reserved.</span>
+        </p>
+        <div class="flex space-x-4 items-center">
+            <select class="language-select bg-white border border-gray-200 rounded-lg px-3 py-1" id="footerLanguageSelect">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+            </select>
+            <a href="About Us.html#privacy" class="text-gray-600 hover:text-blue-600" data-lang="privacy">Privacy Policy</a>
+            <a href="About Us.html#terms" class="text-gray-600 hover:text-blue-600" data-lang="terms">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+  <script>
+   // Language management
+        class LanguageManager {
+            constructor() {
+                this.currentLang = localStorage.getItem('preferredLanguage') || 'en';
+                this.translations = {
+                    en: {
+                        dashboard: "Dashboard",
+                        hospitals: "Hospitals",
+                        records: "Records",
+                        appointments: "Appointments",
+                        profile: "Profile",
+                        about: "About",
+                        steps: "Steps",
+                        heartRate: "Heart Rate",
+                        bloodPressure: "Blood Pressure",
+                        weight: "Weight",
+                        healthOverview: "Health Overview",
+                        weeklyActivity: "Weekly Activity",
+                        upcomingAppointments: "Upcoming Appointments",
+                        editData: "Edit Data",
+                        rights: "All rights reserved.",
+                        privacy: "Privacy Policy",
+                        terms: "Terms of Service"
+                    },
+                    hi: {
+                        dashboard: "डैशबोर्ड",
+                        hospitals: "अस्पताल",
+                        records: "रिकॉर्ड्स",
+                        appointments: "नियुक्तियाँ",
+                        profile: "प्रोफ़ाइल",
+                        about: "के बारे में",
+                        steps: "कदम",
+                        heartRate: "हृदय गति",
+                        bloodPressure: "रक्तचाप",
+                        weight: "वज़न",
+                        healthOverview: "स्वास्थ्य अवलोकन",
+                        weeklyActivity: "साप्ताहिक गतिविधि",
+                        upcomingAppointments: "आगामी नियुक्तियाँ",
+                        editData: "डेटा संपादित करें",
+                        rights: "सर्वाधिकार सुरक्षित।",
+                        privacy: "गोपनीयता नीति",
+                        terms: "सेवा की शर्तें"
+                    },
+                    ta: {
+                        dashboard: "டாஷ்போர்டு",
+                        hospitals: "மருத்துவமனைகள்",
+                        records: "பதிவுகள்",
+                        appointments: "நியமனங்கள்",
+                        profile: "சுயவிவரம்",
+                        about: "பற்றி",
+                        steps: "காலடி",
+                        heartRate: "இதய துடிப்பு",
+                        bloodPressure: "இரத்த அழுத்தம்",
+                        weight: "எடை",
+                        healthOverview: "ஆரோக்கிய மேற்பார்வை",
+                        weeklyActivity: "வாராந்திர செயல்பாடுகள்",
+                        upcomingAppointments: "வரவிருக்கும் நியமனங்கள்",
+                        editData: "தரவை திருத்துக",
+                        rights: "எல்லா உரிமைகளும் பாதுகாக்கப்பட்டுள்ளன.",
+                        privacy: "தனியுரிமைக் கொள்கை",
+                        terms: "வழக்குகள் மற்றும் நிபந்தனைகள்"
+                    },
+                    te: {
+                        dashboard: "డాష్‌బోర్డు",
+                        hospitals: "రోగశాలలు",
+                        records: "రికార్డులు",
+                        appointments: "అపాయింట్‌మెంట్లు",
+                        profile: "ప్రొఫైల్",
+                        about: "గురించి",
+                        steps: "పాదాలు",
+                        heartRate: "హృదయ స్పందన",
+                        bloodPressure: "రక్తపోటు",
+                        weight: "బరువు",
+                        healthOverview: "ఆరోగ్య అవలోకనం",
+                        weeklyActivity: "వారం వారీ కార్యకలాపాలు",
+                        upcomingAppointments: "తర్వాతి అపాయింట్‌మెంట్లు",
+                        editData: "డేటా సవరించు",
+                        rights: "అన్ని హక్కులు రిజర్వ్‌ చేయబడ్డాయి.",
+                        privacy: "గోప్యతా విధానం",
+                        terms: "సేవా నిబంధనలు"
+                    }
+                };
+
+                this.initializeLanguageSelectors();
+                this.updateLanguage(this.currentLang);
+            }
+
+            initializeLanguageSelectors() {
+                const selectors = ['languageSelect', 'footerLanguageSelect'];
+                
+                selectors.forEach(selectorId => {
+                    const selector = document.getElementById(selectorId);
+                    if (selector) {
+                        // Set initial value
+                        selector.value = this.currentLang;
+                        
+                        // Add change listener
+                        selector.addEventListener('change', (e) => {
+                            this.handleLanguageChange(e.target.value);
+                        });
+                    }
+                });
+            }
+
+            handleLanguageChange(newLang) {
+                this.currentLang = newLang;
+                this.updateLanguage(newLang);
+                this.syncLanguageSelectors(newLang);
+                this.saveLanguagePreference(newLang);
+            }
+
+            updateLanguage(lang) {
+                // Update document language
+                document.documentElement.lang = lang;
+                
+                // Update all translatable elements
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.getAttribute('data-lang');
+                    if (this.translations[lang]?.[key]) {
+                        el.textContent = this.translations[lang][key];
+                    }
+                });
+
+                // Dispatch custom event for other components
+                document.dispatchEvent(new CustomEvent('languageChanged', {
+                    detail: { language: lang }
+                }));
+
+                // Show the correct content
+                document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
+                document.getElementById(`content-${lang}`).classList.remove('hidden');
+            }
+
+            syncLanguageSelectors(lang) {
+                document.querySelectorAll('.language-select').forEach(select => {
+                    select.value = lang;
+                });
+            }
+
+        }
+  </script>
+ </body>
+</html>

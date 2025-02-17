@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .game-container {
+            max-width: 555px;
+            width: 100%;
+            height: 400px;
+            margin: 20px auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .memory-card {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .memory-card:hover {
+            background: #f4f4f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="../Profile.html" class="back-button">← Back</a>
+<!-- Large Game Container -->
+<div class="game-container">
+    <div id="gameContent"></div>
+</div>
+
+<script>
+    let gameState;
+
+    function initializeMemoryGame() {
+        const emojis = ['🌟', '🎈', '🎨', '❤', '🌸', '🎵', '🎮', '🎪'];
+        const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+        gameState = {
+            cards,
+            flipped: [],
+            matched: [],
+            canFlip: true
+        };
+
+        const gameContent = document.getElementById('gameContent');
+        const grid = document.createElement('div');
+        grid.className = 'memory-grid';
+
+        cards.forEach((emoji, index) => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.index = index;
+            card.onclick = () => handleMemoryCard(index);
+            grid.appendChild(card);
+        });
+
+        gameContent.appendChild(grid);
+    }
+
+    function handleMemoryCard(index) {
+        if (!gameState.canFlip || gameState.flipped.includes(index) || gameState.matched.includes(index)) return;
+
+        const cards = document.querySelectorAll('.memory-card');
+        cards[index].textContent = gameState.cards[index];
+        gameState.flipped.push(index);
+
+        if (gameState.flipped.length === 2) {
+            gameState.canFlip = false;
+            const [first, second] = gameState.flipped;
+
+            if (gameState.cards[first] === gameState.cards[second]) {
+                gameState.matched.push(first, second);
+                gameState.flipped = [];
+                gameState.canFlip = true;
+
+                if (gameState.matched.length === gameState.cards.length) {
+                    setTimeout(() => alert('Congratulations! You matched all the cards!'), 500);
+                }
+            } else {
+                setTimeout(() => {
+                    cards[first].textContent = '';
+                    cards[second].textContent = '';
+                    gameState.flipped = [];
+                    gameState.canFlip = true;
+                }, 1000);
+            }
+        }
+    }
+
+    // Automatically initialize the game when the page loads
+    document.addEventListener("DOMContentLoaded", initializeMemoryGame);
+</script>
+
+</body>
+</html>

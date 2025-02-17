@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-blue-50 font-roboto">
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <i class="fas fa-heartbeat text-blue-500 text-2xl"></i>
+            <h1 class="text-xl font-bold ml-2">HealthConnect</h1>
+        </div>
+        <nav class="flex space-x-4">
+            <a class="text-gray-600 hover:text-blue-500" href="#">Dashboard</a>
+            <a class="text-gray-600 hover:text-blue-500" href="#">Profile</a>
+            <a class="text-gray-600 hover:text-blue-500" href="#">Settings</a>
+            <a class="text-gray-600 hover:text-blue-500" href="#">Logout</a>
+        </nav>
+    </header>
+    <main class="p-4">
+        <section class="bg-white shadow p-4 rounded mb-4">
+            <h2 class="text-2xl font-bold text-blue-500 mb-4">User  Profile</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-blue-100 p-4 rounded">
+                    <h3 class="text-xl font-bold mb-2">Personal Information</h3>
+                    <p><strong>Name:</strong> John Doe</p>
+                    <p><strong>Age:</strong> 30</p>
+                    <p><strong>Email:</strong> john.doe@example.com</p>
+                    <p><strong>Phone:</strong> (123) 456-7890</p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Edit Profile</button>
+                </div>
+                <div class="bg-blue-100 p-4 rounded">
+                    <h3 class="text-xl font-bold mb-2">Health Streaks</h3>
+                    <img alt="Graph showing health streaks" height="200" src="https://storage.googleapis.com/a1aa/image/NgZZwL6YMTsBiGIVUMS7QheI3wNji9StjU3hka-DdsI.jpg" width="400"/>
+                </div>
+            </div>
+        </section>
+        <section class="bg-white shadow p-4 rounded mb-4">
+            <h2 class="text-2xl font-bold text-blue-500 mb-4">Daily Streak</h2>
+            <div class="flex items-center">
+                <p class="text-lg">🔥 5 days</p>
+                <p class="ml-4 text-gray-600">Keep up the good work! You're on a 5-day streak of healthy habits.</p>
+                <button class="ml-auto bg-blue-500 text-white p-2 rounded-full">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </section>
+        <section class="bg-white shadow p-4 rounded mb-4">
+            <h2 class="text-2xl font-bold text-blue-500 mb-4">Mental Health Games</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">⚽ ballchase</h4>
+                    <p>improve your focus</p>
+                    <a href="games/ballchase.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">🧘‍♂ Bubble Pop</h4>
+                    <p>Relax and unwind</p>
+                    <a href="games/bubblepop.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">🔮 squish</h4>
+                    <p>squeeze the ball</p>
+                    <a href="games/squish.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">✨ sparkling</h4>
+                    <p>sparkle it everywhere</p>
+                    <a href="games/sparkling.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">💖 Positive Affirmations</h4>
+                    <p>Boost your mood with positive self-talk</p>
+                    <a href="games/positive-affirmation.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded">
+                    <h4 class="text-lg font-bold">🎯 Memory Match</h4>
+                    <p>Train your brain with this fun matching game</p>
+                    <a href="games/memorymatch.html">
+                        <button class="text-blue-500 mt-2">Play Now</button>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="bg-white shadow p-4 rounded mb-4">
+            <h2 class="text-2xl font-bold text-blue-500 mb-4">Mental Health Resources</h2>
+            <ul class="list-disc pl-5">
+                <li><a class="text-blue-500 hover:underline" href="https://www.medicalnewstoday.com/articles/154543" target="_blank">Mental Health: Definition, Common Disorders, and Early Signs</a></li>
+                <li><a class="text-blue-500 hover:underline" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2777555/" target="_blank">The Importance of Mental Health Awareness</a></li>
+                <li><a class="text-blue-500 hover:underline" href="https://www.pinerest.org/newsroom/articles/mental-health-awareness-blog/" target="_blank">Understanding Mental Health and Well-being</a></li>
+            </ul>
+        </section>
+        <section class="bg-white shadow p-4 rounded mb-4">
+            <h2 class="text-2xl font-bold text-blue-500 mb-4">Emergency Support</h2>
+            <button class="bg-red-500 text-white px-4 py-2 rounded">Get Help Now</button>
+            <p class="text-gray-600 mt-2">If you are feeling overwhelmed or in crisis, please seek help immediately.</p>
+        </section>
+    </main>
+    <footer class="bg-white shadow p-4 text-center">
+        <p class="text-gray-600">© 2023 HealthConnect. All rights reserved.</p>
+    </footer>
+</body>
+</html>

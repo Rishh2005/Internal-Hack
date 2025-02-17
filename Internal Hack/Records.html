@@ -1,0 +1,159 @@
+<html>
+<head>
+    <title>Health Records</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-blue-50">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <svg class="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                </svg>
+                <h1 class="text-xl font-semibold text-blue-600 ml-2">HealthConnect</h1>
+            </div>
+            <nav class="flex items-center space-x-6">
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Dashboard</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Hospitals</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Records</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Appointments</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Profile</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">About</a>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-globe text-gray-600"></i>
+                    <span class="text-gray-600">English</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <h2 class="text-2xl font-semibold text-blue-600 mb-4">Health Records</h2>
+        <section class="bg-white shadow-md rounded-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-600 mb-4">Your Records</h3>
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-blue-100">
+                        <th class="py-2 px-4">Date</th>
+                        <th class="py-2 px-4">Type</th>
+                        <th class="py-2 px-4">Doctor</th>
+                        <th class="py-2 px-4">Image</th>
+                        <th class="py-2 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b hover:bg-blue-50 transition duration-300">
+                        <td class="py-2 px-4">2023-01-15</td>
+                        <td class="py-2 px-4">General Checkup</td>
+                        <td class="py-2 px-4">Dr. Smith</td>
+                        <td class="py-2 px-4">
+                            <img alt="General Checkup image" class="h-10 w-10" height="40" src="https://storage.googleapis.com/a1aa/image/T0mWBOA8SXQqmD1zu4v-DZ6AcDX7u14vaL5G2pOkRU0.jpg" width="40"/>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-600 transition duration-300">View</button>
+                            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">Download</button>
+                        </td>
+                    </tr>
+                    <tr class="border-b hover:bg-blue-50 transition duration-300">
+                        <td class="py-2 px-4">2023-03-22</td>
+                        <td class="py-2 px-4">Blood Test</td>
+                        <td class="py-2 px-4">Dr. Johnson</td>
+                        <td class="py-2 px-4">
+                            <img alt="Blood Test image" class="h-10 w-10" height="40" src="https://storage.googleapis.com/a1aa/image/6_XLsnx8ixnsY_glv8takHpeGxZMV76KB-pgbBE7u2A.jpg" width="40"/>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-600 transition duration-300">View</button>
+                            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">Download</button>
+                        </td>
+                    </tr>
+                    <tr class="border-b hover:bg-blue-50 transition duration-300">
+                        <td class="py-2 px-4">2023-05-10</td>
+                        <td class="py-2 px-4">X-Ray</td>
+                        <td class="py-2 px-4">Dr. Williams</td>
+                        <td class="py-2 px-4">
+                            <img alt="X-Ray image" class="h-10 w-10" height="40" src="https://storage.googleapis.com/a1aa/image/RXGzXCzgTUmBoVRAdE5xzFSZ2SldRfL3d5ENe49l0wo.jpg" width="40"/>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-600 transition duration-300">View</button>
+                            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">Download</button>
+                        </td>
+                    </tr>
+                    <tr class="border-b hover:bg-blue-50 transition duration-300">
+                        <td class="py-2 px-4">2023-06-05</td>
+                        <td class="py-2 px-4">Dental Checkup</td>
+                        <td class="py-2 px-4">Dr. Brown</td>
+                        <td class="py-2 px-4">
+                            <img alt="Dental Checkup image" class="h-10 w-10" height="40" src="https://storage.googleapis.com/a1aa/image/AoXC-43Xx4iXvURFBaZ26H6l0zrHJUR6excztPNtV64.jpg" width="40"/>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-600 transition duration-300">View</button>
+                            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">Download</button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-blue-50 transition duration-300">
+                        <td class="py-2 px-4">2023-07-18</td>
+                        <td class="py-2 px-4">Eye Exam</td>
+                        <td class="py-2 px-4">Dr. Davis</td>
+                        <td class="py-2 px-4">
+                            <img alt="Eye Exam image" class="h-10 w-10" height="40" src="https://storage.googleapis.com/a1aa/image/u_mOpdXlA67cMSOeAwxITOqy7948v9-MBrMHQmPAYV0.jpg" width="40"/>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-600 transition duration-300">View</button>
+                            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300">Download</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="bg-white shadow-md rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-blue-600 mb-4">Add New Record</h3>
+            <form class="space-y-4" onsubmit="return validateForm()">
+                <div class="flex items-center space-x-4">
+                    <input class="w-full px-4 py-2 border rounded-md" id="date" placeholder="dd-mm-yyyy" type="text"/>
+                    <i class="fas fa-calendar-alt text-gray-600"></i>
+                </div>
+                <input class="w-full px-4 py-2 border rounded-md" id="type" placeholder="Type" type="text"/>
+                <input class="w-full px-4 py-2 border rounded-md" id="doctor" placeholder="Doctor" type="text"/>
+                <div class="flex items-center space-x-4">
+                    <input class="w-full px-4 py-2 border rounded-md" id="image" type="file"/>
+                    <i class="fas fa-paperclip text-gray-600"></i>
+                </div>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300" type="submit">+</button>
+            </form>
+        </section>
+    </main>
+    <footer class="bg-white shadow-sm mt-8">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <p class="text-gray-600">© 2023 HealthConnect. All rights reserved.</p>
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-globe text-gray-600"></i>
+                    <span class="text-gray-600">English</span>
+                </div>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Privacy Policy</a>
+                <a class="text-gray-600 hover:text-blue-600 transition duration-300" href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function validateForm() {
+            const date = document.getElementById('date').value;
+            const type = document.getElementById('type').value;
+            const doctor = document.getElementById('doctor').value;
+            const image = document.getElementById('image').value;
+
+            if (!date || !type || !doctor || !image) {
+                alert('Please fill out all fields.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

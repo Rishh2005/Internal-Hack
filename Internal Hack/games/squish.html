@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      overflow: hidden;
+      touch-action: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    #game-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .ball {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s ease-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.8);
+      user-select: none;
+      box-shadow: inset -5px -5px 15px rgba(0, 0, 0, 0.3),
+                  inset 5px 5px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .ball:active {
+      transform: scale(0.85);
+    }
+
+    .pop-text {
+      position: absolute;
+      color: white;
+      font-size: 20px;
+      pointer-events: none;
+      animation: float-up 1s ease-out forwards;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    #score {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 24px;
+      z-index: 100;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      animation: ripple-effect 0.8s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-effect {
+      0% {
+        transform: scale(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    #sound-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      background: none;
+      border: none;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <button id="sound-toggle">🔊</button>
+  <div id="score">Squishes: 0</div>
+  <div id="game-container"></div>
+
+  <script>
+    const container = document.getElementById('game-container');
+    const scoreElement = document.getElementById('score');
+    const soundToggle = document.getElementById('sound-toggle');
+    let score = 0;
+    let soundEnabled = true;
+
+    // Create audio context and sounds
+    let audioContext;
+    let sounds = {};
+
+    function initAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Create different pitched sounds for variety
+      const pitches = [262, 330, 392, 440, 494, 587];
+      sounds.squish = pitches.map(pitch => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.value = pitch;
+        
+        gainNode.gain.value = 0;
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start();
+        
+        return { oscillator, gainNode };
+      });
+    }
+
+    function playSquishSound() {
+      if (!soundEnabled || !audioContext) return;
+      
+      // Play a random pitched sound
+      const sound = sounds.squish[Math.floor(Math.random() * sounds.squish.length)];
+      
+      sound.gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+      sound.gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      sound.gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+      sound.gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
+    }
+
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      
+      if (soundEnabled && !audioContext) {
+        initAudio();
+      }
+    });
+
+    const messages = [
+      "Squish!", "Pop!", "Boop!", "Bounce!", "Wheee!", 
+      "Relax~", "Ahhh!", "Squishy!", "Peaceful", "Calm~"
+    ];
+    const emojis = ["😊", "🎈", "✨", "🌟", "🌸", "🎵", "🌺", "💫", "🦋", "🌈"];
+
+    class Ball {
+      constructor() {
+        this.element = document.createElement('div');
+        this.element.className = 'ball';
+        this.size = Math.random() * 60 + 40;
+        this.x = Math.random() * (window.innerWidth - this.size);
+        this.y = Math.random() * (window.innerHeight - this.size);
+        this.dx = (Math.random() - 0.5) * 4;
+        this.dy = (Math.random() - 0.5) * 4;
+        this.hue = Math.random() * 360;
+        this.emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        this.element.style.width = `${this.size}px`;
+        this.element.style.height = `${this.size}px`;
+        this.element.style.background = `hsla(${this.hue}, 80%, 60%, 0.8)`;
+        this.element.textContent = this.emoji;
+        
+        this.element.addEventListener('mousedown', () => this.squish());
+        this.element.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          this.squish();
+        });
+        
+        container.appendChild(this.element);
+        this.update();
+      }
+
+      squish() {
+        score++;
+        scoreElement.textContent = `Squishes: ${score}`;
+        
+        // Play sound
+        playSquishSound();
+        
+        // Create pop text
+        const popText = document.createElement('div');
+        popText.className = 'pop-text';
+        popText.textContent = messages[Math.floor(Math.random() * messages.length)];
+        popText.style.left = `${this.x + this.size/2}px`;
+        popText.style.top = `${this.y}px`;
+        container.appendChild(popText);
+        setTimeout(() => popText.remove(), 1000);
+        
+        // Create ripple effect
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = `${this.x + this.size/2}px`;
+        ripple.style.top = `${this.y + this.size/2}px`;
+        ripple.style.width = `${this.size}px`;
+        ripple.style.height = `${this.size}px`;
+        ripple.style.border = `2px solid hsla(${this.hue}, 80%, 60%, 0.8)`;
+        container.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 800);
+        
+        // Change color and emoji
+        this.hue = (this.hue + 30) % 360;
+        this.element.style.background = `hsla(${this.hue}, 80%, 60%, 0.8)`;
+        this.emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        this.element.textContent = this.emoji;
+        
+        // Add random velocity
+        this.dx = (Math.random() - 0.5) * 8;
+        this.dy = (Math.random() - 0.5) * 8;
+      }
+
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        
+        // Bounce off walls
+        if (this.x <= 0 || this.x >= window.innerWidth - this.size) {
+          this.dx *= -0.8;
+          this.x = Math.max(0, Math.min(window.innerWidth - this.size, this.x));
+        }
+        if (this.y <= 0 || this.y >= window.innerHeight - this.size) {
+          this.dy *= -0.8;
+          this.y = Math.max(0, Math.min(window.innerHeight - this.size, this.y));
+        }
+        
+        // Apply friction
+        this.dx *= 0.99;
+        this.dy *= 0.99;
+        
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+        
+        requestAnimationFrame(() => this.update());
+      }
+    }
+
+    // Create multiple balls
+    for (let i = 0; i < 8; i++) {
+      new Ball();
+    }
+
+    // Initialize audio on first interaction
+    document.addEventListener('click', () => {
+      if (!audioContext) {
+        initAudio();
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
