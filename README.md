@@ -1,6 +1,4 @@
 # Internal-Hackathon
-# HealthConnect
-
 **HealthConnect** is an innovative healthcare application designed to revolutionize healthcare management and disease prediction. The app offers an intuitive and interactive platform for users to monitor their health, predict diseases based on symptoms, and engage in fun, health-focused games.
 
 ## Features
