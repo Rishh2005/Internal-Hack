@@ -18,12 +18,6 @@ Engaging mini-games are integrated into the app to promote physical activity and
 ### 5. **Enhanced Accessibility**
 HealthConnect supports a user-friendly interface and accessible design to ensure inclusivity and ease of use for individuals of all ages.
 
-## Application Link
-You can access the HealthConnect application by clicking the link below:
-[HealthConnect Application](https://kzmh3zqdqh7h8zpbv5gj.lite.vusercontent.net/)
-You can Watch The working through this Video:
-[Healthconnect Video Presentation](https://www.youtube.com/watch?v=7m_WI2EO8gc&t=12s)
-
 ## How to Use
 1. Download the app using the link provided.
 2. Register or log in to create a profile.
